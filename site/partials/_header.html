@@ -1,0 +1,93 @@
+{{define "header"}}
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Calabar 2018</title>
+    <meta name="google-site-verification" content="5fGLP3sEda3vdMQk8plTkVCeOixi-WmoXD4AlUvW45M" />
+    <meta name="description" content="Calabar 2018.">
+    <meta name="keywords" content="Calabar 2018, Lion, Convention">
+    <meta name="author" content="Past3studio">
+
+    <link rel="shortcut icon" href="/assets/public/img/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/public/img/apple-touch-icon.jpg">
+    <link rel="apple-touch-icon" sizes="72x72" href="/assets/public/img/apple-touch-icon-72x72.jpg">
+    <link rel="apple-touch-icon" sizes="114x114" href="/assets/public/img/apple-touch-icon-114x114.jpg">
+
+  <link href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.0.0/animate.min.css" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" type="text/css" href="/assets/public/css/custom-animations.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/public/css/style.css" />
+    <link rel="stylesheet" href="https://unpkg.com/tachyons@4.8.0/css/tachyons.min.css" />
+
+    <!--[if lt IE 9]>
+		<script src="/assets/public/js/html5shiv.js"></script>
+		<script src="/assets/public/js/respond.min.js"></script>
+	<![endif]-->
+  <style>
+
+  .sticky{
+    width:100%;
+    top:0;
+  }
+
+@media (max-width:400px){
+  .pt4-xs{
+      padding-top: 3rem;
+  }
+}
+  @media (min-width:400px){
+
+    .vh-85-ns{
+      height: 85vh;
+    }
+  }
+  </style>
+</head>
+
+<body class="pt4-xs">
+  
+<header class="header header-nav header-black">
+    <div class=" header-wrapperx" style="background-color:#262627">
+        <div class=" pa0 pa2-ns cf">
+            <div class="col-sm-2 col-xs-12 navigation-headerx pa2 pa3-ns pt4-ns">
+                <a href="/" class="logo">
+                    <img src="/assets/public/img/lion_logo.png" alt="Calabar 2018" width="50" height="50" class="retina-hide">
+                    <img src="/assets/public/img/lion_logo.png" alt="Calabar 2018" width="50" height="50" class="retina-show">
+                </a>
+                <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-controls="navigation">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <div class="col-sm-10 col-xs-12 navigation-container">
+                <div id="navigation" class="navbar-collapse collapse">
+                    <ul class="navigation-list pull-left light-text">
+
+                        <li class="navigation-item"><a href="/" class="navigation-link">Home</a></li>
+                        <li class="navigation-item dropdown dn">
+                            <a class="navigation-link dropdown-toggle" data-toggle="dropdown">About</a>
+                            <ul class="dropdown-menu">
+                                <li class="navigation-item"><a href="/#location" class="navigation-link">Location</a></li>
+                                <li class="navigation-item"><a href="/about/guide-program" class="navigation-link">Guide Program</a></li>
+                                <li class="navigation-item"><a href="/#gallery" class="navigation-link">Gallery</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="navigation-item"><a href="/schedule" class="navigation-link">Schedule</a></li>
+                        <li class="navigation-item"><a href="/hotels" class="navigation-link">Hotels</a></li>
+                        <li class="navigation-item"><a href="/#sponsors" class="navigation-link">Sponsors</a></li>
+                    </ul>
+                    <a href="/register" class="pull-right buy-btn">Register</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+{{end}}
