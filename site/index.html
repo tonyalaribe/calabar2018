@@ -336,19 +336,18 @@
                 <h3>Calabar 2018 Sponsors</h3>
                 <p class="text-alt">click on a sponsor logo <span class="highlight">for more details</span></p>
                 <br/>
-                <br/>
 
                 <div class="">
+                  {{range .sponsors}}
                           <div class="">
-                              <a href="/sponsors/<%= sponsor.ID %>">
-                                <img src="<%= baseurl %><%= sponsor.LogoURL %>"
+                              <a href="/sponsors/{{.id}}" class="dib">
+                                <img src="{{.logo_u_r_l}}"
                                 alt="<%= sponsor.Name %>"
                                 class="h3 dib"
                                 >
                               </a>
-                              <br/>
-                              <br/>
                           </div>
+                  {{end}}
                         <div>
         </section>
 

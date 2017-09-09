@@ -80,10 +80,40 @@ func init() {
 		renderTemplate(w, "hotels.html", data)
 		// http.ServeFile(w, r, "./site/hotels.html")
 	})
+	frontend.Router.HandleFunc("/schedule", func(w http.ResponseWriter, r *http.Request) {
+		// log.Println(r.URL.Path)
+		response, err := http.Get(BASEURL + "/api/contents?type=Schedule")
+		if err != nil {
+			log.Printf("%s\n", err)
+		}
+		defer response.Body.Close()
+		body, _ := ioutil.ReadAll(response.Body)
+		data := make(map[string]interface{})
+		// json.Unmarshal(data, v)
+		json.Unmarshal(body, &data)
+		log.Printf("%s\n", string(body))
+		renderTemplate(w, "schedule.html", data)
+		// http.ServeFile(w, r, "./site/hotels.html")
+	})
 
 	frontend.Router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		// log.Println(r.URL.Path)
-		http.ServeFile(w, r, "./site/index.html")
+		response, err := http.Get(BASEURL + "/api/contents?type=Sponsor")
+		if err != nil {
+			log.Printf("%s\n", err)
+		}
+		defer response.Body.Close()
+		body, _ := ioutil.ReadAll(response.Body)
+		sponsor := make(map[string]interface{})
+		// json.Unmarshal(data, v)
+		json.Unmarshal(body, &sponsor)
+
+		data := make(map[string]interface{})
+		data["sponsors"] = sponsor["data"]
+
+		log.Printf("%#v\n", data)
+		renderTemplate(w, "index.html", data)
+		// http.ServeFile(w, r, "./site/index.html")
 	})
 
 }
