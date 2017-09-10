@@ -63,12 +63,12 @@ func MapIndex(typeName string) error {
 	var idx bleve.Index
 
 	// check if index exists, use it or create new one
-	pwd, err := os.Getwd()
-	if err != nil {
-		return err
-	}
+	// pwd, err := os.Getwd()
+	// if err != nil {
+	// 	return err
+	// }
 
-	searchPath := filepath.Join(pwd, "search")
+	searchPath := filepath.Join("/", "storage", "search")
 
 	err = os.MkdirAll(searchPath, os.ModeDir|os.ModePerm)
 	if err != nil {
