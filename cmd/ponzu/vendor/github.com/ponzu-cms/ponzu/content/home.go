@@ -1,11 +1,13 @@
 package content
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"html/template"
 	"io/ioutil"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -90,6 +92,67 @@ func init() {
 		// log.Println("./site/" + r.URL.Path[1:])
 		http.ServeFile(w, r, "./site/"+r.URL.Path[1:])
 		// http.FileServer(http.Dir("./public/").Open(name)
+	}))
+
+	frontend.Router.HandleFunc("/register", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
+		// log.Println(r.URL.Path)
+
+		renderTemplate(w, "register.html", nil)
+		// http.ServeFile(w, r, "./site/hotels.html")
+	}))
+
+	frontend.Router.HandleFunc("/register_individual", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
+		// log.Println(r.URL.Path)
+
+		data := make(map[string]interface{})
+		json.NewDecoder(r.Body).Decode(&data)
+		log.Println(data)
+		var buf bytes.Buffer
+		ww := multipart.NewWriter(&buf)
+		ww.WriteField("name", data["FullName"].(string))
+		ww.WriteField("club", data["Club"].(string))
+		ww.WriteField("region", data["Region"].(string))
+		ww.WriteField("district", data["District"].(string))
+		ww.WriteField("phone", data["Phone"].(string))
+		ww.WriteField("email", data["Email"].(string))
+		ww.Close()
+
+		resp, err := http.Post(BASEURL+"/api/content/create?type=RegisteredIndividuals", ww.FormDataContentType(), &buf)
+		if err != nil {
+			log.Println(err)
+		}
+		byt, _ := ioutil.ReadAll(resp.Body)
+		log.Println(string(byt))
+		json.NewEncoder(w).Encode(data)
+		// renderTemplate(w, "register.html", nil)
+		// http.ServeFile(w, r, "./site/hotels.html")
+	}))
+
+	frontend.Router.HandleFunc("/register_club", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
+		// log.Println(r.URL.Path)
+
+		data := make(map[string]interface{})
+		json.NewDecoder(r.Body).Decode(&data)
+		log.Println(data)
+		var buf bytes.Buffer
+		ww := multipart.NewWriter(&buf)
+		ww.WriteField("name", data["FullName"].(string))
+		ww.WriteField("club", data["Club"].(string))
+		ww.WriteField("region", data["Region"].(string))
+		ww.WriteField("district", data["District"].(string))
+		ww.WriteField("phone", data["Phone"].(string))
+		ww.WriteField("email", data["Email"].(string))
+		ww.Close()
+
+		resp, err := http.Post(BASEURL+"/api/content/create?type=RegisteredClubs", ww.FormDataContentType(), &buf)
+		if err != nil {
+			log.Println(err)
+		}
+		byt, _ := ioutil.ReadAll(resp.Body)
+		log.Println(string(byt))
+		json.NewEncoder(w).Encode(data)
+		// renderTemplate(w, "register.html", nil)
+		// http.ServeFile(w, r, "./site/hotels.html")
 	}))
 
 	frontend.Router.HandleFunc("/hotels", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {

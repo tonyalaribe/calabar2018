@@ -105,5 +105,5 @@ func init() {
 // String defines how a Hotel is printed. Update it using more descriptive
 // fields from the Hotel struct type
 func (h *Hotel) String() string {
-	return fmt.Sprintf("Hotel: %s", h.UUID)
+	return fmt.Sprintf("Hotel: %s", h.Name)
 }
