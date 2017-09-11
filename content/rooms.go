@@ -17,7 +17,9 @@ type Room struct {
 	Hotel       string `json:"hotel"`
 	Description string `json:"description"`
 	Quantity    int    `json:"quantity"`
-	Price       int    `json:"price"`
+	RackRate    int    `json:"rack_rate"`
+	LionsRate   int    `json:"lions_rate"`
+	Distance    int    `json:"distance"`
 	// RoomPhoto   string `json:"room_photo"`
 }
 
@@ -52,15 +54,29 @@ func (a *Room) MarshalEditor() ([]byte, error) {
 		editor.Field{
 			View: editor.Input("Quantity", a, map[string]string{
 				"label":       "Quantity",
-				"type":        "text",
+				"type":        "number",
 				"placeholder": "Enter the Quantity here",
 			}),
 		},
 		editor.Field{
-			View: editor.Input("Price", a, map[string]string{
-				"label":       "Price",
-				"type":        "text",
-				"placeholder": "Enter the Price here",
+			View: editor.Input("RackRate", a, map[string]string{
+				"label":       "RackRate",
+				"type":        "number",
+				"placeholder": "Enter the Rack Rate here",
+			}),
+		},
+		editor.Field{
+			View: editor.Input("LionsRate", a, map[string]string{
+				"label":       "LionsRate",
+				"type":        "number",
+				"placeholder": "Enter the Lions Rate here",
+			}),
+		},
+		editor.Field{
+			View: editor.Input("Distance", a, map[string]string{
+				"label":       "Distance",
+				"type":        "number",
+				"placeholder": "Enter the Distance here",
 			}),
 		},
 		// editor.Field{
