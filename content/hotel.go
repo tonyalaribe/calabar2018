@@ -13,12 +13,14 @@ type Hotel struct {
 	Available   bool   `json:"available"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	Rate        int    `json:"rate"`
-	Address     string `json:"address"`
-	Count       int    `json:"count"`
-	Total       int    `json:"total"`
-	PhotoURL    string `json:"photo_u_r_l"`
-	Phone       string `json:"phone"`
+	// Rate        int    `json:"rate"`
+	Address string `json:"address"`
+	// Count       int    `json:"count"`
+	Total    int    `json:"total"`
+	PhotoURL string `json:"photo_u_r_l"`
+	Phone    string `json:"phone"`
+
+	Rooms []Room
 }
 
 // MarshalEditor writes a buffer of html to edit a Hotel within the CMS
@@ -53,13 +55,13 @@ func (h *Hotel) MarshalEditor() ([]byte, error) {
 				"placeholder": "Enter the Photo here",
 			}),
 		},
-		editor.Field{
-			View: editor.Input("Rate", h, map[string]string{
-				"label":       "Rate",
-				"type":        "text",
-				"placeholder": "Enter the Rate here",
-			}),
-		},
+		// editor.Field{
+		// 	View: editor.Input("Rate", h, map[string]string{
+		// 		"label":       "Rate",
+		// 		"type":        "text",
+		// 		"placeholder": "Enter the Rate here",
+		// 	}),
+		// },
 		editor.Field{
 			View: editor.Input("Address", h, map[string]string{
 				"label":       "Address",
@@ -75,20 +77,20 @@ func (h *Hotel) MarshalEditor() ([]byte, error) {
 				"placeholder": "Enter the Phone here",
 			}),
 		},
-		editor.Field{
-			View: editor.Input("Count", h, map[string]string{
-				"label":       "Count",
-				"type":        "text",
-				"placeholder": "Enter the Count here",
-			}),
-		},
-		editor.Field{
-			View: editor.Input("Total", h, map[string]string{
-				"label":       "Total",
-				"type":        "text",
-				"placeholder": "Enter the Total here",
-			}),
-		},
+		// editor.Field{
+		// 	View: editor.Input("Count", h, map[string]string{
+		// 		"label":       "Count",
+		// 		"type":        "text",
+		// 		"placeholder": "Enter the Count here",
+		// 	}),
+		// },
+		// editor.Field{
+		// 	View: editor.Input("Total", h, map[string]string{
+		// 		"label":       "Total",
+		// 		"type":        "text",
+		// 		"placeholder": "Enter the Total here",
+		// 	}),
+		// },
 	)
 
 	if err != nil {

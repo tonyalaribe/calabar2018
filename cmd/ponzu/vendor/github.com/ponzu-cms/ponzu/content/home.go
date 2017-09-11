@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -157,7 +158,7 @@ func init() {
 
 	frontend.Router.HandleFunc("/hotels", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
 		// log.Println(r.URL.Path)
-		data := make(map[string]interface{})
+		hotels := make(map[string][]Hotel)
 		response, err := http.Get(BASEURL + "/api/contents?type=Hotel")
 		if err != nil {
 			log.Printf("%s\n", err)
@@ -165,11 +166,44 @@ func init() {
 			defer response.Body.Close()
 			body, _ := ioutil.ReadAll(response.Body)
 
-			// json.Unmarshal(data, v)
-			json.Unmarshal(body, &data)
+			// json.Unmarshal(hotels, v)
+			json.Unmarshal(body, &hotels)
+			log.Printf("%#v\n", hotels)
 			// log.Printf("%s\n", string(body))
 		}
 
+		rooms := make(map[string][]Room)
+		response, err = http.Get(BASEURL + "/api/contents?type=Room")
+		if err != nil {
+			log.Printf("%s\n", err)
+		} else {
+			defer response.Body.Close()
+			body, _ := ioutil.ReadAll(response.Body)
+
+			// json.Unmarshal(hotels, v)
+			json.Unmarshal(body, &rooms)
+			log.Printf("%#v\n", rooms)
+		}
+
+		finalHotels := []Hotel{}
+		for _, hotel := range hotels["data"] {
+			log.Println(hotel)
+			nrooms := []Room{}
+			for _, room := range rooms["data"] {
+				log.Println(room)
+
+				if room.Hotel == fmt.Sprintf("/api/content?type=Hotel&id=%d", hotel.ID) {
+					log.Println("match")
+					nrooms = append(nrooms, room)
+				}
+			}
+			hotel.Rooms = nrooms
+			finalHotels = append(finalHotels, hotel)
+		}
+
+		log.Println(finalHotels)
+		data := make(map[string][]Hotel)
+		data["data"] = finalHotels
 		renderTemplate(w, "hotels.html", data)
 		// http.ServeFile(w, r, "./site/hotels.html")
 	}))

@@ -10,7 +10,7 @@ import (
 	"github.com/ponzu-cms/ponzu/system/item"
 )
 
-type Accomodation struct {
+type Room struct {
 	item.Item
 
 	Type        string `json:"type"`
@@ -18,16 +18,15 @@ type Accomodation struct {
 	Description string `json:"description"`
 	Quantity    int    `json:"quantity"`
 	Price       int    `json:"price"`
-	RoomPhoto   string `json:"room_photo"`
-	
+	// RoomPhoto   string `json:"room_photo"`
 }
 
-// MarshalEditor writes a buffer of html to edit a Accomodation within the CMS
+// MarshalEditor writes a buffer of html to edit a Room within the CMS
 // and implements editor.Editable
-func (a *Accomodation) MarshalEditor() ([]byte, error) {
+func (a *Room) MarshalEditor() ([]byte, error) {
 	view, err := editor.Form(a,
 		// Take note that the first argument to these Input-like functions
-		// is the string version of each Accomodation field, and must follow
+		// is the string version of each Room field, and must follow
 		// this pattern for auto-decoding and auto-encoding reasons:
 		editor.Field{
 			View: editor.Input("Type", a, map[string]string{
@@ -64,24 +63,24 @@ func (a *Accomodation) MarshalEditor() ([]byte, error) {
 				"placeholder": "Enter the Price here",
 			}),
 		},
-		editor.Field{
-			View: editor.File("RoomPhoto", a, map[string]string{
-				"label":       "Photo",
-				"type":        "text",
-				"placeholder": "Enter the Photo here",
-			}),
-		},
+		// editor.Field{
+		// 	View: editor.File("RoomPhoto", a, map[string]string{
+		// 		"label":       "Photo",
+		// 		"type":        "text",
+		// 		"placeholder": "Enter the Photo here",
+		// 	}),
+		// },
 	)
 
 	if err != nil {
-		return nil, fmt.Errorf("Failed to render Accomodation editor view: %s", err.Error())
+		return nil, fmt.Errorf("Failed to render Room editor view: %s", err.Error())
 	}
 
 	return view, nil
 }
 
 func init() {
-	item.Types["Accomodation"] = func() interface{} { return new(Accomodation) }
+	item.Types["Room"] = func() interface{} { return new(Room) }
 }
 
 // func SearchMapping() (*mapping.IndexMappingImpl, error) {
@@ -91,10 +90,10 @@ func init() {
 func IndexContent() bool {
 	return true
 }
-func (a *Accomodation) String() string {
+func (a *Room) String() string {
 	return a.Type
 }
 
-func (a *Accomodation) Update(res http.ResponseWriter, req *http.Request) error {
+func (a *Room) Update(res http.ResponseWriter, req *http.Request) error {
 	return nil
 }

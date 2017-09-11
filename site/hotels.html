@@ -27,40 +27,51 @@
 <section id="hotels" class="fullwidth-section">
 	{{ range $i,$data := .data}}
 <div class="fullwidth-path">
-			<div class="fullwidth-section-bg {{if odd $i}}bg-right{{else}}bg-left{{end}}" style="background-image: url('{{$data.photo_u_r_l}}');"></div>
+			<div class="fullwidth-section-bg {{if odd $i}}bg-right{{else}}bg-left{{end}}" style="background-image: url('{{$data.PhotoURL}}');"></div>
 
 			<div class="col-sm-6 {{if odd $i}}align-{{else}}col-sm-offset-6 {{end}} fullwidth-column">
 				<article>
 					<h3>
-          <span>{{.name}} {{$i}}</span>
+          <span>{{.Name}}</span>
           </h3>
 					<p>
 						<small class="text-alt">
 							<span class="highlight">
 								<a href="https://goo.gl/maps/B46mFQjQgHA2">
-									{{.address}}, {{.city}}
+									{{.Address}}
 								</a>
 							</span>
 						</small>
 					</p>
-					<p>{{.description}}</p>
-					<p><span class="highlight">{{.phone}}</span></p>
+					<p> {{ .Description}}</p>
+					<p>
+						<span class="highlight">{{.Phone}}</span>
+					</p>
 					<br />
-					<div class="speaker">
-						<ul class="speaker-socials align-<%= rightleft(index) %>">
-							<li>
-								<a href="#"><!-- <span class="fa fa-dollar"></span> -->
-									N
-								</a>
-								<span class="highlight"> <%= hotel.RoomRate %></span>
-							</li>
-						</ul>
-					</div>
-          {{ if eq .available true}}
-					<a href="hotels/<%= hotel.Slug %>" class="btn btn-sm btn-outline-clr" style="margin: 30px 0 0">Reserve this Hotel</a>
+
+          {{ if eq .Available true}}
+						{{range $j, $room := $data.Rooms}}
+							<div class="pv3  bb b--light-gray">
+									<div>
+										Type: {{$room.Type}}
+									</div>
+									<div class="cf">
+										<div class="dib">
+											Rooms Available: {{$room.Quantity}}
+										</div>
+										<div class="dib fr">
+											Price: ₦{{$room.Price}}
+										</div>
+									</div>
+									<a class="btn btn-sm btn-outline-clr ma0 mv2">Reserve this Room</a>
+							</div>
+						{{end}}
+
           {{ else}}
-					<span class="btn btn-sm btn-outline-clr" style="margin: 30px 0 0">No Inventory Available</span>
+					<span class="btn btn-sm btn-outline-clr" style="margin: 30px 0 0">No Rooms Available</span>
           {{end}}
+
+
 				</article>
 			</div>
 		</div>
