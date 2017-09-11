@@ -42,7 +42,7 @@ func (a *Room) MarshalEditor() ([]byte, error) {
 				"label": "Hotel",
 			},
 				"Hotel",
-				`{{ .name }} `,
+				`{{ .name  }} `,
 			),
 		},
 		editor.Field{
