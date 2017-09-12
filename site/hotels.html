@@ -15,7 +15,7 @@
 						be sure to mention the <span class="highlight">GopherCon room block.</span>
 						Rates will be honored until the block sells out.
 
-						
+
 					</p> -->
 					<p>
 						Here are available hotel acomodations and their prices you can choose from.
@@ -42,8 +42,13 @@
 								<a href="https://goo.gl/maps/B46mFQjQgHA2" class="f4">
 									{{.Address}}
 								</a>
+
 							</span>
 						</small>
+						<small class="text-alt db f5">
+							{{.Distance}}km from event location
+						</small>
+
 					</p>
 					<p> {{ .Description}}</p>
 					<p>
@@ -70,7 +75,7 @@
 											Lions Rate: ₦{{$room.LionsRate}}
 										</div>
 									</div>
-									<a class="btn btn-sm btn-outline-clr ma0 mv2">Reserve this Room</a>
+									<a class="btn btn-sm btn-outline-clr ma0 mv2" href="/hotels/book?room={{$room.Slug}}&hotel={{$data.Slug}}">Reserve this Room</a>
 							</div>
 						{{end}}
 

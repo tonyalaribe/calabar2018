@@ -81,6 +81,8 @@ func RecoverWrap(h http.HandlerFunc) http.HandlerFunc {
 }
 
 func init() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
 	url := os.Getenv("DOMAIN")
 	if url != "" {
 		BASEURL = url
@@ -156,6 +158,32 @@ func init() {
 		// http.ServeFile(w, r, "./site/hotels.html")
 	}))
 
+	frontend.Router.HandleFunc("/register_booking", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
+		// log.Println(r.URL.Path)
+
+		data := make(map[string]interface{})
+		json.NewDecoder(r.Body).Decode(&data)
+		log.Println(data)
+		var buf bytes.Buffer
+		ww := multipart.NewWriter(&buf)
+		ww.WriteField("full_name", data["FullName"].(string))
+		ww.WriteField("phone", data["Phone"].(string))
+		ww.WriteField("email", data["Email"].(string))
+		ww.WriteField("room", data["Room"].(string))
+		ww.WriteField("hotel", data["Hotel"].(string))
+		ww.Close()
+
+		resp, err := http.Post(BASEURL+"/api/content/create?type=Bookings", ww.FormDataContentType(), &buf)
+		if err != nil {
+			log.Println(err)
+		}
+		byt, _ := ioutil.ReadAll(resp.Body)
+		log.Println(string(byt))
+		json.NewEncoder(w).Encode(data)
+		// renderTemplate(w, "register.html", nil)
+		// http.ServeFile(w, r, "./site/hotels.html")
+	}))
+
 	frontend.Router.HandleFunc("/hotels", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
 		// log.Println(r.URL.Path)
 		hotels := make(map[string][]Hotel)
@@ -205,6 +233,74 @@ func init() {
 		data := make(map[string][]Hotel)
 		data["data"] = finalHotels
 		renderTemplate(w, "hotels.html", data)
+		// http.ServeFile(w, r, "./site/hotels.html")
+	}))
+
+	frontend.Router.HandleFunc("/hotels/book", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
+		// log.Println(r.URL.Path)
+		log.Println(r.URL.Query())
+
+		// vars := mux.Vars(r)
+		// log.Printf("%#v", vars)
+		// slug := vars["slug"]
+		// log.Println(slug)
+
+		// hotelSlug := r.URL.Query().Get("hotel")
+		roomSlug := r.URL.Query().Get("room")
+
+		room := make(map[string][]Room)
+		response, err := http.Get(BASEURL + "/api/content?type=Room&slug=" + roomSlug)
+		if err != nil {
+			log.Printf("%s\n", err)
+		} else {
+			defer response.Body.Close()
+			body, _ := ioutil.ReadAll(response.Body)
+			log.Printf("> %#v", string(body))
+			// json.Unmarshal(hotels, v)
+			json.Unmarshal(body, &room)
+			log.Printf("%#v\n", room)
+			// log.Printf("%s\n", string(body))
+		}
+
+		hotel := make(map[string][]Hotel)
+		response, err = http.Get(BASEURL + room["data"][0].Hotel)
+		if err != nil {
+			log.Printf("%s\n", err)
+		} else {
+			defer response.Body.Close()
+			body, _ := ioutil.ReadAll(response.Body)
+
+			// json.Unmarshal(hotels, v)
+			json.Unmarshal(body, &hotel)
+			log.Printf("%#v\n", hotel)
+		}
+
+		// finalHotels := []Hotel{}
+		//  hotel := range hotel["data"] {
+		// 	log.Println(hotel)
+		// 	nrooms := []Room{}
+		// 	for _, room := range rooms["data"] {
+		// 		log.Println(room)
+		//
+		// 		if room.Hotel == fmt.Sprintf("/api/content?type=Hotel&id=%d", hotel.ID) {
+		// 			log.Println("match")
+		// 			nrooms = append(nrooms, room)
+		// 		}
+		// 	}
+		// 	hotel.Rooms = nrooms
+		// 	finalHotels = append(finalHotels, hotel)
+		// }
+		//
+		// log.Println(finalHotels)
+		data := make(map[string]interface{})
+		if len(hotel["data"]) > 0 {
+			data["hotel"] = hotel["data"][0]
+		}
+		if len(room["data"]) > 0 {
+			data["room"] = room["data"][0]
+		}
+		log.Println(data)
+		renderTemplate(w, "book_hotel.html", data)
 		// http.ServeFile(w, r, "./site/hotels.html")
 	}))
 

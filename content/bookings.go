@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/bosssauce/reference"
 	"github.com/ponzu-cms/ponzu/management/editor"
 	"github.com/ponzu-cms/ponzu/system/item"
 )
@@ -11,11 +12,13 @@ import (
 type Bookings struct {
 	item.Item
 
-	Name           string `json:"name"`
+	FullName       string `json:"full_name"`
 	Email          string `json:"email"`
+	Phone          string `json:"phone"`
 	RegistrationId string `json:"registration_id"`
 	ModeOfPayment  string `json:"mode_of_payment"`
-	Accomodation   string `json:"accomodation"`
+	Room           string `json:"room"`
+	Hotel          string `json:"hotel"`
 }
 
 // MarshalEditor writes a buffer of html to edit a Bookings within the CMS
@@ -26,10 +29,10 @@ func (b *Bookings) MarshalEditor() ([]byte, error) {
 		// is the string version of each Bookings field, and must follow
 		// this pattern for auto-decoding and auto-encoding reasons:
 		editor.Field{
-			View: editor.Input("Name", b, map[string]string{
-				"label":       "Name",
+			View: editor.Input("FullName", b, map[string]string{
+				"label":       "Full Name",
 				"type":        "text",
-				"placeholder": "Enter the Name here",
+				"placeholder": "Enter the Full Name here",
 			}),
 		},
 		editor.Field{
@@ -37,6 +40,13 @@ func (b *Bookings) MarshalEditor() ([]byte, error) {
 				"label":       "Email",
 				"type":        "text",
 				"placeholder": "Enter the Email here",
+			}),
+		},
+		editor.Field{
+			View: editor.Input("Phone", b, map[string]string{
+				"label":       "Phone",
+				"type":        "text",
+				"placeholder": "Enter the Phone here",
 			}),
 		},
 		editor.Field{
@@ -54,11 +64,16 @@ func (b *Bookings) MarshalEditor() ([]byte, error) {
 			}),
 		},
 		editor.Field{
-			View: editor.Input("Accomodation", b, map[string]string{
-				"label":       "Accomodation",
-				"type":        "text",
-				"placeholder": "Enter the Accomodation here",
-			}),
+			View: reference.Select("Room", b, map[string]string{
+				"label": "Room",
+			}, "Room",
+				`{{ .type  }} `),
+		},
+		editor.Field{
+			View: reference.Select("Hotel", b, map[string]string{
+				"label": "Hotel",
+			}, "Hotel",
+				`{{ .name  }} `),
 		},
 	)
 

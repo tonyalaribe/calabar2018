@@ -1,0 +1,136 @@
+
+{{template "header"}}
+	<section class="section" id="hotels" style="padding: 100px 0 30px;">
+		<div class="container">
+			<div class="col-sm-6 align-center img-column">
+				<img src="{{.hotel.PhotoURL}}" alt="" class="w-100" />
+			</div>
+
+			<div class="col-sm-6 align-left">
+				<article style="max-width: 480px;">
+					<h3 class="pb3">Book Hotel</h3>
+					<div>
+						<div>
+							Hotel: {{.hotel.Name}}
+						</div>
+						<div class="pv3  bb b--light-gray">
+
+								<div class="cf">
+									<div class="dib">
+										Type: {{.room.Type}}
+									</div>
+									<div class="dib fr">
+										Rooms Remaining: {{.room.Quantity}}
+									</div>
+								</div>
+								<div class="cf">
+									<div class="dib ">
+										Rack Rate: ₦{{.room.LionsRate}}
+									</div>
+									<div class="dib fr">
+										Lions Rate: ₦{{.room.LionsRate}}
+									</div>
+								</div>
+						</div>
+
+					</div>
+					<div id="content_1" class="tabcontent">
+						<div>
+							<div class="pb2 pt3">
+								<label class="db pv1">Full Name</label>
+								<input type="string" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="i_fullname"/>
+							</div>
+							<div class="pv2">
+								<label class="db pv1">Phone</label>
+								<input type="tel" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="i_phone"/>
+							</div>
+							<div class="pv2">
+								<label class="db pv1">Email</label>
+								<input type="tel" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="i_email"/>
+							</div>
+
+
+							<div class="pv3">
+								<button class="submitbtn pv2 ph3 pv3-ns" onclick="submitBooking()">Submit</button>
+							</div>
+							<div class="pa3 bg-light-green " id="i_success" style="display:none">
+								<p>Registration was successful</p>
+							</div>
+						</div>
+					</div>
+
+				</article>
+			</div>
+		</div>
+	</section>
+
+<style>
+	.tabmenu, .tabmenu:hover, .tabmenu:focus{
+		color: #E87E04;
+		border-top: #E87E04 solid 1px;
+		border-left: #E87E04 solid 1px;
+		border-right: #E87E04 solid 1px;
+		display:inline-block;
+		padding: .5rem 1rem;
+		text-decoration: none;
+	}
+	 .tab .active{
+		background-color: #D55400;
+		color:#fff;
+	}
+ .submitbtn{
+	 background-color: #D55400;
+	 color:#fff;
+		border-top: #E87E04 solid 1px;
+		border-left: #E87E04 solid 1px;
+		border-right: #E87E04 solid 1px;
+	}
+</style>
+<script>
+
+	function rudrSwitchTab(rudr_tab_id, rudr_tab_content) {
+		// first of all we get all tab content blocks (I think the best way to get them by class names)
+		var x = document.getElementsByClassName("tabcontent");
+		var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].style.display = 'none'; // hide all tab content
+		}
+		document.getElementById(rudr_tab_content).style.display = 'block'; // display the content of the tab we need
+
+		// now we get all tab menu items by class names (use the next code only if you need to highlight current tab)
+		var x = document.getElementsByClassName("tabmenu");
+		var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].className = 'tabmenu';
+		}
+		document.getElementById(rudr_tab_id).className = 'tabmenu active';
+	}
+
+	function submitBooking(){
+		document.getElementById("i_success").style.display = "none"
+		var req = {}
+		req.FullName = document.getElementById("i_fullname").value
+		req.Email = document.getElementById("i_email").value
+		req.Phone = document.getElementById("i_phone").value
+		req.Hotel = "{{.room.Hotel}}"
+		req.Room = "/api/content?type=Room&id={{.room.ID}}"
+		console.log(req)
+		fetch("/register_booking",{
+			method:"POST",
+			body:JSON.stringify(req)
+		})
+		.then(function(response){
+			return response.json()
+		})
+		.then(function(resp){
+			console.log(resp)
+			document.getElementById("i_fullname").value = ""
+			document.getElementById("i_email").value = ""
+			document.getElementById("i_phone").value = ""
+
+			document.getElementById("i_success").style.display = "block"
+		})
+	}
+
+</script>
+{{template "footer"}}

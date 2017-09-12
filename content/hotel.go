@@ -19,8 +19,8 @@ type Hotel struct {
 	Total    int    `json:"total"`
 	PhotoURL string `json:"photo_u_r_l"`
 	Phone    string `json:"phone"`
-
-	Rooms []Room
+	Distance int    `json:"distance"`
+	Rooms    []Room
 }
 
 // MarshalEditor writes a buffer of html to edit a Hotel within the CMS
@@ -69,7 +69,13 @@ func (h *Hotel) MarshalEditor() ([]byte, error) {
 				"placeholder": "Enter the Address here",
 			}),
 		},
-
+		editor.Field{
+			View: editor.Input("Distance", h, map[string]string{
+				"label":       "Distance",
+				"type":        "number",
+				"placeholder": "Enter the Distance here",
+			}),
+		},
 		editor.Field{
 			View: editor.Input("Phone", h, map[string]string{
 				"label":       "Phone",
