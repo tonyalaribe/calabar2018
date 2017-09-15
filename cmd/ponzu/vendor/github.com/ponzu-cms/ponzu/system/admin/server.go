@@ -57,7 +57,7 @@ func Run() {
 	// API path needs to be registered within server package so that it is handled
 	// even if the API server is not running. Otherwise, images/files uploaded
 	// through the editor will not load within the admin system.
-	uploadsDir := filepath.Join(pwd, "uploads")
+	uploadsDir := filepath.Join("/", "storage", "uploads")
 	http.Handle("/api/uploads/", api.Record(api.CORS(db.CacheControl(http.StripPrefix("/api/uploads/", http.FileServer(restrict(http.Dir(uploadsDir))))))))
 
 	// Database & uploads backup via HTTP route registered with Basic Auth middleware.
