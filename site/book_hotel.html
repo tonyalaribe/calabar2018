@@ -107,6 +107,7 @@
 	}
 
 	function submitBooking(){
+
 		document.getElementById("i_success").style.display = "none"
 		var req = {}
 		req.FullName = document.getElementById("i_fullname").value
@@ -115,21 +116,52 @@
 		req.Hotel = "{{.room.Hotel}}"
 		req.Room = "/api/content?type=Room&id={{.room.ID}}"
 		console.log(req)
-		fetch("/register_booking",{
-			method:"POST",
-			body:JSON.stringify(req)
-		})
-		.then(function(response){
-			return response.json()
-		})
-		.then(function(resp){
-			console.log(resp)
-			document.getElementById("i_fullname").value = ""
-			document.getElementById("i_email").value = ""
-			document.getElementById("i_phone").value = ""
 
-			document.getElementById("i_success").style.display = "block"
-		})
+
+
+		var handler = PaystackPop.setup({
+      key: 'pk_test_2b33f2428dab68c73039e8cbcb6c6802d2454389',
+      email: req.Email,
+      amount: 500000,
+      // ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
+      metadata: {
+         custom_fields: [
+					 {
+							 display_name: "Full Name",
+							 variable_name: "full_name",
+							 value: req.FullName
+					 },
+					 {
+                display_name: "Mobile Number",
+                variable_name: "mobile_number",
+                value: req.Phone
+            }
+         ]
+      },
+      callback: function(response){
+				fetch("/register_booking",{
+					method:"POST",
+					body:JSON.stringify(req)
+				})
+				.then(function(response){
+					return response.json()
+				})
+				.then(function(resp){
+					console.log(resp)
+					document.getElementById("i_fullname").value = ""
+					document.getElementById("i_email").value = ""
+					document.getElementById("i_phone").value = ""
+
+					document.getElementById("i_success").style.display = "block"
+				})
+      },
+      onClose: function(){
+          alert('window closed');
+      }
+    });
+    handler.openIframe();
+
+
 	}
 
 </script>
