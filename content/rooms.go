@@ -1,8 +1,12 @@
 package content
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
+
+	"github.com/ponzu-cms/ponzu/system/db"
 
 	"github.com/bosssauce/reference"
 
@@ -107,7 +111,17 @@ func IndexContent() bool {
 	return true
 }
 func (a *Room) String() string {
-	return a.Type
+	str := strings.Split(a.Hotel, "id=")
+	h, err := db.Content("Hotel:" + str[len(str)-1])
+	if err != nil {
+		return a.Type
+	}
+	hotel := &Hotel{}
+	err = json.Unmarshal(h, hotel)
+	if err != nil {
+		return a.Type
+	}
+	return a.Type + " (" + hotel.Name + ")"
 }
 
 func (a *Room) Update(res http.ResponseWriter, req *http.Request) error {
