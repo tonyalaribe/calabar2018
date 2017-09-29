@@ -111,7 +111,6 @@ func IndexContent() bool {
 	return true
 }
 func (a *Room) String() string {
-	// parse the string
 	str := strings.Split(a.Hotel, "id=")
 	h, err := db.Content("Hotel:" + str[len(str)-1])
 	if err != nil {
