@@ -56,7 +56,13 @@
 					</p>
 					<br />
 
-          {{ if eq .Available true}}
+		  {{ if eq .Available true}}
+					<div class="">
+						<button class="btn btn-sm btn-outline-clr ma0 mv2" onclick="ToggleRooms({{$data.Slug}})">View Available Rooms</button>
+					</div>
+					<br/>
+					<!-- .h5 from bootstrap reduces the line height -->
+					<div class="dn overflow-auto scrollbar pa2 w-100" style="height: 20rem; border-color: #E87E04" id="{{$data.Slug}}">
 						{{range $j, $room := $data.Rooms}}
 							<div class="pv3  bb b--light-gray">
 									<div>
@@ -78,7 +84,7 @@
 									<a class="btn btn-sm btn-outline-clr ma0 mv2" href="/hotels/book?room={{$room.Slug}}&hotel={{$data.Slug}}">Reserve this Room</a>
 							</div>
 						{{end}}
-
+					</div>
           {{ else}}
 					<span class="btn btn-sm btn-outline-clr" style="margin: 30px 0 0">No Rooms Available</span>
           {{end}}
