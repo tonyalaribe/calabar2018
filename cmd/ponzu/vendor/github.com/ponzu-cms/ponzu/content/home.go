@@ -103,6 +103,12 @@ func init() {
 		renderTemplate(w, "register.html", nil)
 		// http.ServeFile(w, r, "./site/hotels.html")
 	}))
+	frontend.Router.HandleFunc("/banquet", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
+		// log.Println(r.URL.Path)
+
+		renderTemplate(w, "banquet.html", nil)
+		// http.ServeFile(w, r, "./site/hotels.html")
+	}))
 
 	frontend.Router.HandleFunc("/register_individual", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
 		// log.Println(r.URL.Path)

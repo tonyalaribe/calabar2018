@@ -5,17 +5,9 @@
 
 			<div class="w-100 w-50-ns dib tl">
 				<article style="max-width: 480px;">
-					<h3 class="pb3 f2 tc lh-title">Register for Lions Club 2018 National Convention
-</h3>
+					<h3 class="pb3 f2 tc lh-title">Register for Banquet Night (₦4000 per ticket)</h3>
 
-
-
-					<div class="bb b-light-gray tab" >
-						<a href="javascript:rudrSwitchTab('tb_1', 'content_1');" id="tb_1" class=" tabmenu active ">Individual</a>
-						<a href="javascript:rudrSwitchTab('tb_2', 'content_2');" id="tb_2" class=" tabmenu   ">Club</a>
-					</div>
-
-					<div id="content_1" class="tabcontent">
+					<div id="content_1" >
 						<div>
 							<div class="pb2 pt3">
 								<label class="db pv1">Full Name</label>
@@ -43,7 +35,7 @@
 							</div>
 
 							<div class="pv3">
-								<button class="submitbtn pv2 ph3 pv3-ns" onclick="submitIndividual()">Submit</button>
+								<button class="submitbtn pv2 ph3 pv3-ns" onclick="submitIndividual()">Proceed to Pay</button>
 							</div>
 							<div class="pa3 bg-light-green " id="i_success" style="display:none">
 								<p>Registration was successful</p>
@@ -51,47 +43,6 @@
 						</div>
 					</div>
 
-
-					<div id="content_2" class="tabcontent" style="display:none;">
-						<div>
-							<div class="pv2">
-								<label class="db pv1">Club Name</label>
-								<input type="string" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="c_club"/>
-
-							</div>
-							<div class="pb2 pt3">
-								<label class="db pv1">Contact Person's Name</label>
-								<input type="string" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="c_fullname"/>
-
-							</div>
-							<div class="pv2">
-								<label class="db pv1">Contact Person's  Phone</label>
-								<input type="tel" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="c_phone"/>
-
-							</div>
-							<div class="pv2">
-								<label class="db pv1">Contact Person's  Email</label>
-								<input type="tel" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="c_email"/>
-
-							</div>
-							<div class="pv2">
-								<label class="db pv1">Region</label>
-								<input type="string" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="c_region"/>
-							</div>
-							<div class="pv2">
-								<label class="db pv1">District </label>
-								<input type="string" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="c_district"/>
-							</div>
-
-							<div class="pv3">
-								<button class="submitbtn pv2 ph3 pv3-ns" onclick="submitClub()">Submit</button>
-							</div>
-
-							<div class="pa3 bg-light-green " id="c_success" style="display:none">
-								<p>Registration was successful</p>
-							</div>
-						</div>
-					</div>
 
 				</article>
 			</div>
@@ -197,79 +148,13 @@
 
 									document.getElementById("i_success").style.display = "block"
 								})
-
-
 		      },
 		      onClose: function(){
 		          alert('Unable to perform payment');
 		      }
 		    });
 		    handler.openIframe();
-
-
 	}
-
-	function submitClub(){
-		document.getElementById("c_success").style.display = "none"
-		var req = {}
-		req.FullName = document.getElementById("c_fullname").value
-		req.Club = document.getElementById("c_club").value
-		req.Region = document.getElementById("c_region").value
-		req.District = document.getElementById("c_district").value
-		req.Email = document.getElementById("c_email").value
-		req.Phone = document.getElementById("c_phone").value
-
-		var handler = PaystackPop.setup({
-		      key: 'pk_test_2b33f2428dab68c73039e8cbcb6c6802d2454389',
-		      email: req.Email,
-		      amount: 2500000,
-		      // ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
-		      metadata: {
-							custom_fields: [
-								{
-										display_name: "Full Name",
-										variable_name: "full_name",
-										value: req.FullName
-								},
-								{
-										 display_name: "Mobile Number",
-										 variable_name: "mobile_number",
-										 value: req.Phone
-								 }
-							]
-		      },
-		      callback: function(response){
-							console.log(req)
-							fetch("/register_club",{
-								method:"POST",
-								body:JSON.stringify(req)
-							})
-							.then(function(response){
-								return response.json()
-							})
-							.then(function(resp){
-								console.log(resp)
-								document.getElementById("c_fullname").value = ""
-								document.getElementById("c_club").value = ""
-								document.getElementById("c_region").value = ""
-								document.getElementById("c_district").value = ""
-								document.getElementById("c_email").value = ""
-								document.getElementById("c_phone").value = ""
-
-								document.getElementById("c_success").style.display = "block"
-							})
-		      },
-		      onClose: function(){
-		          alert('window closed');
-		      }
-		    });
-
-		    handler.openIframe();
-
-
-		}
-
-
 
 </script>
 {{template "footer"}}
