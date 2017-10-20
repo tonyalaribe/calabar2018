@@ -73,11 +73,11 @@ func RecoverWrap(h http.HandlerFunc) http.HandlerFunc {
 				default:
 					err = errors.New("Unknown error")
 				}
-				// log.Println(err.Error())
+				log.Println(err.Error())
 				http.Error(w, "404 Page not found", http.StatusInternalServerError)
 			}
 		}()
-		log.Println("calling next handler...")
+		// log.Println("calling next handler...")
 		h(w, r)
 	}
 }
@@ -112,6 +112,13 @@ func init() {
 		// http.ServeFile(w, r, "./site/hotels.html")
 	}))
 
+	frontend.Router.HandleFunc("/view/individuals", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
+		// log.Println(r.URL.Path)
+
+		renderTemplate(w, "view.html", nil)
+		// http.ServeFile(w, r, "./site/hotels.html")
+	}))
+
 	frontend.Router.HandleFunc("/add_newsletter_email", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
 		data := make(map[string]interface{})
 		json.NewDecoder(r.Body).Decode(&data)
@@ -124,7 +131,28 @@ func init() {
 		ww.WriteField("email", data["Email"].(string))
 		ww.Close()
 
-		log.Println("Making a post request....")
+		newsletters := make(map[string][]Newsletter)
+		Resp, err := http.Get(BASEURL + "/api/contents?type=Newsletter")
+		if err != nil {
+			log.Printf("%s\n", err)
+			return
+		} else {
+			defer Resp.Body.Close()
+			body, err := ioutil.ReadAll(Resp.Body)
+			if err != nil {
+				log.Println("error: ", err)
+			}
+			json.Unmarshal(body, &newsletters)
+			log.Printf("%#v\n", newsletters)
+			for _, newsletter := range newsletters["data"] {
+				if newsletter.Email == data["Email"].(string) {
+					json.NewEncoder(w).Encode(map[string]string{"error": "Already Subscribed"})
+					return
+				}
+			}
+		}
+
+		log.Println("Making a post request...")
 		resp, err := http.Post(BASEURL+"/api/content/create?type=Newsletter", ww.FormDataContentType(), &buf)
 		if err != nil {
 			log.Println(err)
@@ -132,6 +160,7 @@ func init() {
 		byt, _ := ioutil.ReadAll(resp.Body)
 		log.Println(string(byt))
 		json.NewEncoder(w).Encode(data)
+
 	}))
 
 	frontend.Router.HandleFunc("/register_banquet", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {

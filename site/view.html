@@ -1,0 +1,208 @@
+
+{{template "header"}}
+	<section class="section" id="hotels" style="padding: 100px 0 30px;">
+		<div class="container tc">
+
+			<div class="w-100 w-50-ns dib tl">
+				<article style="max-width: 480px;">
+					<h3 class="pb3 f2 tc lh-title">View registered attendees</h3>
+
+
+
+					<div class="bb b-light-gray tab" >
+						<a href="javascript:rudrSwitchTab('tb_1', 'content_1');" id="tb_1" class=" tabmenu active ">Individual</a>
+						<a href="javascript:rudrSwitchTab('tb_2', 'content_2');" id="tb_2" class=" tabmenu   ">Club</a>
+						<a href="javascript:rudrSwitchTab('tb_3', 'content_3');" id="tb_3" class=" tabmenu   ">Banquet</a>
+					</div>
+
+					<div id="content_1" class="tabcontent">
+						<p>table goes here...</p>
+					</div>
+
+
+					<div id="content_2" class="tabcontent" style="display:none;">
+						<p>table goes here...</p>
+					</div>
+					<div id="content_3" class="tabcontent" style="display:none;">
+						<p>table goes here...</p>
+					</div>
+				</article>
+			</div>
+		</div>
+	</section>
+
+<style>
+	.tabmenu, .tabmenu:hover, .tabmenu:focus{
+		color: #E87E04;
+		border-top: #E87E04 solid 1px;
+		border-left: #E87E04 solid 1px;
+		border-right: #E87E04 solid 1px;
+		display:inline-block;
+		padding: .5rem 1rem;
+		text-decoration: none;
+	}
+	 .tab .active{
+		background-color: #D55400;
+		color:#fff;
+	}
+ .submitbtn{
+	 background-color: #D55400;
+	 color:#fff;
+		border-top: #E87E04 solid 1px;
+		border-left: #E87E04 solid 1px;
+		border-right: #E87E04 solid 1px;
+	}
+</style>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+
+	function rudrSwitchTab(rudr_tab_id, rudr_tab_content) {
+		// first of all we get all tab content blocks (I think the best way to get them by class names)
+		var x = document.getElementsByClassName("tabcontent");
+		var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].style.display = 'none'; // hide all tab content
+		}
+		document.getElementById(rudr_tab_content).style.display = 'block'; // display the content of the tab we need
+
+		// now we get all tab menu items by class names (use the next code only if you need to highlight current tab)
+		var x = document.getElementsByClassName("tabmenu");
+		var i;
+		for (i = 0; i < x.length; i++) {
+			x[i].className = 'tabmenu';
+		}
+		document.getElementById(rudr_tab_id).className = 'tabmenu active';
+	}
+
+
+
+	function submitIndividual(){
+		document.getElementById("i_success").style.display = "none"
+		var req = {}
+		req.FullName = document.getElementById("i_fullname").value
+		req.FullName = document.getElementById("i_fullname").value
+		req.Club = document.getElementById("i_club").value
+		req.Region = document.getElementById("i_region").value
+		req.District = document.getElementById("i_district").value
+		req.Email = document.getElementById("i_email").value
+		req.Phone = document.getElementById("i_phone").value
+
+
+
+
+				var handler = PaystackPop.setup({
+		      key: 'pk_test_2b33f2428dab68c73039e8cbcb6c6802d2454389',
+		      email: req.Email,
+		      amount: 500000,
+		      // ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
+		      metadata: {
+		         custom_fields: [
+							 {
+									 display_name: "Full Name",
+									 variable_name: "full_name",
+									 value: req.FullName
+							 },
+							 {
+		                display_name: "Mobile Number",
+		                variable_name: "mobile_number",
+		                value: req.Phone
+		            }
+		         ]
+		      },
+		      callback: function(response){
+
+								console.log(req)
+								fetch("/register_individual",{
+									method:"POST",
+									body:JSON.stringify(req)
+								})
+								.then(function(response){
+									return response.json()
+								})
+								.then(function(resp){
+									console.log(resp)
+									document.getElementById("i_fullname").value = ""
+									document.getElementById("i_club").value = ""
+									document.getElementById("i_region").value = ""
+									document.getElementById("i_district").value = ""
+									document.getElementById("i_email").value = ""
+									document.getElementById("i_phone").value = ""
+
+									document.getElementById("i_success").style.display = "block"
+								})
+
+
+		      },
+		      onClose: function(){
+		          alert('Unable to perform payment');
+		      }
+		    });
+		    handler.openIframe();
+
+
+	}
+
+	function submitClub(){
+		document.getElementById("c_success").style.display = "none"
+		var req = {}
+		req.FullName = document.getElementById("c_fullname").value
+		req.Club = document.getElementById("c_club").value
+		req.Region = document.getElementById("c_region").value
+		req.District = document.getElementById("c_district").value
+		req.Email = document.getElementById("c_email").value
+		req.Phone = document.getElementById("c_phone").value
+
+		var handler = PaystackPop.setup({
+		      key: 'pk_test_2b33f2428dab68c73039e8cbcb6c6802d2454389',
+		      email: req.Email,
+		      amount: 2500000,
+		      // ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
+		      metadata: {
+							custom_fields: [
+								{
+										display_name: "Full Name",
+										variable_name: "full_name",
+										value: req.FullName
+								},
+								{
+										 display_name: "Mobile Number",
+										 variable_name: "mobile_number",
+										 value: req.Phone
+								 }
+							]
+		      },
+		      callback: function(response){
+							console.log(req)
+							fetch("/register_club",{
+								method:"POST",
+								body:JSON.stringify(req)
+							})
+							.then(function(response){
+								return response.json()
+							})
+							.then(function(resp){
+								console.log(resp)
+								document.getElementById("c_fullname").value = ""
+								document.getElementById("c_club").value = ""
+								document.getElementById("c_region").value = ""
+								document.getElementById("c_district").value = ""
+								document.getElementById("c_email").value = ""
+								document.getElementById("c_phone").value = ""
+
+								document.getElementById("c_success").style.display = "block"
+							})
+		      },
+		      onClose: function(){
+		          alert('window closed');
+		      }
+		    });
+
+		    handler.openIframe();
+
+
+		}
+
+
+
+</script>
+{{template "footer"}}

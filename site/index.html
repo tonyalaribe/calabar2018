@@ -233,7 +233,7 @@
 
                     <!-- Begin MailChimp Signup Form -->
                     <div id="mc_embed_signup">
-                        <form class="subscribe themebgpale" action="#!" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+                        <!-- <form class="subscribe themebgpale" action="#!" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate> -->
                             <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="Enter your email address" required>
                             <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
                             <div style="position: absolute; left: -5000px;" aria-hidden="true">
@@ -242,11 +242,46 @@
 
                     </div>
 
-                    <button class="btn btn-sm btn-outline-clr" id="mc-embedded-subscribe" type="submit">Subscribe now &raquo;</button>
-                    <!--End mc_embed_signup-->
-                    </form>
+                    <button class="btn btn-sm btn-outline-clr" id="mc-embedded-subscribe" onclick="subscribe()">Subscribe now &raquo;</button>
+                    
                 </div>
             </div>
+            <script src="/assets/public/js/iziToast.min.js"></script>
+            <script>
+                function subscribe() {
+                    var req = {}
+                    req.Email = document.getElementById("mce-EMAIL").value
+                    console.log("email: ", req.Email, " - ", !req.Email);
+                    if (!req.Email) {
+                        // tell the user that the email is wrong or empty
+                        console.log(req.Email);
+                        iziToast.error({
+                            title: "Error",
+                            message: "Please enter a valid email address.",
+                            position: "center"
+                        })
+                        return
+                    }
+                    fetch("/add_newsletter_email", {
+                        method: "POST",
+                        body: JSON.stringify(req)
+                    })
+                    .then(function(response){
+                        var resp = response.json().then(function(res){
+                            console.log("hey:", res)
+                        })
+                        console.log("response: ", resp)
+                        iziToast.success({
+                            title: "Success",
+                            message: "You have successfully subscribed to our newsletter.",
+                            position: "center"
+                        })
+                    })
+                    .catch(function(error){
+                        console.info("Error: ", error);
+                    })
+                }
+            </script>
           </section>
         </section>
         <section id="prices" class="section align-center">

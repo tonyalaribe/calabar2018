@@ -44,7 +44,12 @@ func init() {
 // String defines how a Newsletter is printed. Update it using more descriptive
 // fields from the Newsletter struct type
 func (n *Newsletter) String() string {
-	return fmt.Sprintf("Newsletter: %s", n.UUID)
+	// return fmt.Sprintf("Newsletter: %s", n.UUID)
+	return fmt.Sprintf("Newsletter: %s", n.Email)
+}
+
+func (n *Newsletter) Approve(res http.ResponseWriter, req *http.Request) error {
+	return nil
 }
 
 func (n *Newsletter) Create(res http.ResponseWriter, req *http.Request) error {
