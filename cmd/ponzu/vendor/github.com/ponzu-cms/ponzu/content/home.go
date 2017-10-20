@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/bosssauce/frontend"
@@ -72,10 +73,11 @@ func RecoverWrap(h http.HandlerFunc) http.HandlerFunc {
 				default:
 					err = errors.New("Unknown error")
 				}
-				log.Println(err.Error())
+				// log.Println(err.Error())
 				http.Error(w, "404 Page not found", http.StatusInternalServerError)
 			}
 		}()
+		log.Println("calling next handler...")
 		h(w, r)
 	}
 }
@@ -107,6 +109,38 @@ func init() {
 		// log.Println(r.URL.Path)
 
 		renderTemplate(w, "banquet.html", nil)
+		// http.ServeFile(w, r, "./site/hotels.html")
+	}))
+
+	frontend.Router.HandleFunc("/register_banquet", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
+		data := make(map[string]interface{})
+		json.NewDecoder(r.Body).Decode(&data)
+		log.Println("data: ", data)
+		var buf bytes.Buffer
+		ww := multipart.NewWriter(&buf)
+
+		log.Println("writing...")
+
+		err := ww.WriteField("registration_id", data["RegistrationID"].(string))
+		log.Println(err)
+		err = ww.WriteField("phone", data["Phone"].(string))
+		log.Println(err)
+		err = ww.WriteField("email", data["Email"].(string))
+		log.Println(err)
+		log.Printf("type: %T", data["Amount"])
+		err = ww.WriteField("amount", strconv.FormatFloat(data["Amount"].(float64), 'f', -1, 64))
+		log.Println("err: ", err)
+		// check if registration id is present...
+
+		ww.Close()
+		log.Println("Making a post request....")
+		resp, err := http.Post(BASEURL+"/api/content/create?type=Banquet", ww.FormDataContentType(), &buf)
+		if err != nil {
+			log.Println(err)
+		}
+		byt, _ := ioutil.ReadAll(resp.Body)
+		log.Println(string(byt))
+		json.NewEncoder(w).Encode(data)
 		// http.ServeFile(w, r, "./site/hotels.html")
 	}))
 
