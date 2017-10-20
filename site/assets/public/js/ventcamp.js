@@ -199,7 +199,7 @@ Ventcamp = {
                     padding = (parentHeight - elHeight) / 2;
 
                 if ( padding >= 0 ) {
-                    $parent.css({'padding-top': padding, 'padding-bottom': 0 });
+                    // $parent.css({'padding-top': padding, 'padding-bottom': 0 });
                 }
             });
         }
@@ -590,7 +590,7 @@ Ventcamp = {
                         zoom: 14,
                         scrollwheel: false,
                         mapTypeControl: false,
-			key: "AIzaSyBIxsbjhVtRa3F7nSXVJWQY4oiXL9ROiuE",                   
+			key: "AIzaSyBIxsbjhVtRa3F7nSXVJWQY4oiXL9ROiuE",
 		    };
 
                 function createMap () {
