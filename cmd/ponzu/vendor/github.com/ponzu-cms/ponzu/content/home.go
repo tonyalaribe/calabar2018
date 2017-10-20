@@ -26,6 +26,9 @@ var templates = template.New("").Funcs(template.FuncMap{
 		}
 		return true
 	},
+	"add": func(a, b int) string {
+		return strconv.Itoa(a + b)
+	},
 })
 
 // Render a template given a model
@@ -113,10 +116,61 @@ func init() {
 	}))
 
 	frontend.Router.HandleFunc("/view/individuals", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
-		// log.Println(r.URL.Path)
+		individuals := make(map[string][]RegisteredIndividual)
+		Resp, err := http.Get(BASEURL + "/api/contents?type=RegisteredIndividuals")
+		if err != nil {
+			renderTemplate(w, "viewindividuals.html", nil)
+			log.Printf("%s\n", err)
+			return
+		}
 
-		renderTemplate(w, "view.html", nil)
+		defer Resp.Body.Close()
+		body, err := ioutil.ReadAll(Resp.Body)
+		if err != nil {
+			log.Println("error: ", err)
+		}
+		json.Unmarshal(body, &individuals)
+		log.Printf("individuals: %#v\nbody: %#v\n", individuals, string(body))
+		renderTemplate(w, "viewindividuals.html", individuals)
+
 		// http.ServeFile(w, r, "./site/hotels.html")
+	}))
+	frontend.Router.HandleFunc("/view/clubs", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
+		clubs := make(map[string][]RegisteredClub)
+		Resp, err := http.Get(BASEURL + "/api/contents?type=RegisteredClubs")
+		if err != nil {
+			renderTemplate(w, "viewclubs.html", nil)
+			log.Printf("%s\n", err)
+			return
+		}
+
+		defer Resp.Body.Close()
+		body, err := ioutil.ReadAll(Resp.Body)
+		if err != nil {
+			log.Println("error: ", err)
+		}
+		json.Unmarshal(body, &clubs)
+		log.Printf("clubs: %#v\nbody: %#v\n", clubs, string(body))
+		renderTemplate(w, "viewclubs.html", clubs)
+		// http.ServeFile(w, r, "./site/hotels.html")
+	}))
+	frontend.Router.HandleFunc("/view/banquets", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
+		banquets := make(map[string][]Banquet)
+		Resp, err := http.Get(BASEURL + "/api/contents?type=Banquet")
+		if err != nil {
+			renderTemplate(w, "viewbanquets.html", nil)
+			log.Printf("%s\n", err)
+			return
+		}
+
+		defer Resp.Body.Close()
+		body, err := ioutil.ReadAll(Resp.Body)
+		if err != nil {
+			log.Println("error: ", err)
+		}
+		json.Unmarshal(body, &banquets)
+		log.Printf("Banquets: %#v\nbody: %#v\n", banquets, string(body))
+		renderTemplate(w, "viewbanquets.html", banquets)
 	}))
 
 	frontend.Router.HandleFunc("/add_newsletter_email", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {

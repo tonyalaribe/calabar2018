@@ -1,0 +1,59 @@
+
+{{template "header"}}
+	<section class="section" id="hotels" style="padding: 100px 0 30px;">
+		<div class="container tc" id="pdf">
+
+			<div class="w-80-l dib">
+				<article>
+					<h3 class="pb3 f2 tc lh-title">Registered Individuals</h3>
+
+					<div class="">
+						<table class="f6 w-100 mw8 center" cellspacing="0">
+							<thead class="pa2">
+								<th class="fw6 bb b--black-20 tl pb3 pr3 bg-white tc">S/N</th>
+								<th class="fw6 bb b--black-20 tl pb3 pr3 bg-white tc">Name</th>
+								<th class="fw6 bb b--black-20 tl pb3 pr3 bg-white tc">Email</th>
+								<th class="fw6 bb b--black-20 tl pb3 pr3 bg-white tc">Phone</th>
+								<th class="fw6 bb b--black-20 tl pb3 pr3 bg-white tc">Club</th>
+							</thead>
+							<tbody class="lh-copy">
+							{{ range $i, $data := .data }}
+								<tr>
+									<td class="pv3 pr3 bb b--black-20 tc">{{add $i 1}}</td>
+									<td class="pv3 pr3 bb b--black-20 tc">{{$data.Name}}</td>
+									<td class="pv3 pr3 bb b--black-20 tc">{{$data.Email}}</td>
+									<td class="pv3 pr3 bb b--black-20 tc">{{$data.Phone}}</td>
+									<td class="pv3 pr3 bb b--black-20 tc">{{$data.Club}}</td>
+								</tr>
+							{{end}}
+							</tbody>
+						</table>
+						<button class="pull-right buy-btn" onclick="printPDF()">Download PDF</button>
+					</div>
+				</article>
+			</div>
+		</div>
+		<script src="/assets/public/js/jspdf.min.js"></script>
+		<script src="/assets/public/js/from_html.js"></script>
+		<script src="/assets/public/js/split_text_to_size.js"></script>
+		<script src="/assets/public/js/standard_fonts_metrics.js"></script>
+		<script>
+			function printPDF() {
+	
+				var doc = new jsPDF();          
+				var elementHandler = {
+					'#ignorePDF': function (element, renderer) {
+						return true;
+					}
+				};
+				var source = window.document.getElementById("pdf");
+				doc.fromHTML(source, 15, 15, {
+					'width': 180,
+					'elementHandlers': elementHandler
+				});
+	
+				doc.save("individuals.pdf");
+			}
+		</script>
+	</section>
+{{template "footer"}}

@@ -75,3 +75,7 @@ func (b *Banquet) String() string {
 func (b *Banquet) Create(res http.ResponseWriter, req *http.Request) error {
 	return nil
 }
+
+func (b *Banquet) AutoApprove(res http.ResponseWriter, req *http.Request) error {
+	return nil
+}
