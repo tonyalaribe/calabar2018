@@ -1,160 +1,119 @@
 
 {{template "header"}}
-	<section class="section" id="hotels" style="padding: 100px 0 30px;">
-		<div class="container tc">
+<section class="section" id="hotels" style="padding: 100px 0 30px;">
+	<div class="container tc">
 
-			<div class="w-100 w-50-ns dib tl">
-				<article style="max-width: 480px;">
-					<h3 class="pb3 f2 tc lh-title">Register for Banquet Night (₦4000 per ticket)</h3>
+		<div class="w-100 w-50-ns dib tl">
+			<article style="max-width: 480px;">
+				<h3 class="pb3 f2 tc lh-title">Register for Lions Club 2018 Banquet</h3>
 
-					<div id="content_1" >
-						<div>
-							<div class="pb2 pt3">
-								<label class="db pv1">Full Name</label>
-								<input type="string" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="i_fullname"/>
-							</div>
-							<div class="pv2">
-								<label class="db pv1">Phone</label>
-								<input type="tel" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="i_phone"/>
-							</div>
-							<div class="pv2">
-								<label class="db pv1">Email</label>
-								<input type="tel" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="i_email"/>
-							</div>
-							<div class="pv2">
-								<label class="db pv1">Club</label>
-								<input type="string" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="i_club"/>
-							</div>
-							<div class="pv2">
-								<label class="db pv1">Region</label>
-								<input type="string" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="i_region"/>
-							</div>
-							<div class="pv2">
-								<label class="db pv1">District </label>
-								<input type="string" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="i_district"/>
-							</div>
+				<div id="content_1" class="tabcontent">
+					<div>
+						<div class="pb2 pt3">
+							<label class="db pv1">Registration ID</label>
+							<input type="string" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="registration_id"/>
+						</div>
+						<div class="pv2">
+							<label class="db pv1">Phone</label>
+							<input type="tel" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="phone"/>
+						</div>
+						<div class="pv2">
+							<label class="db pv1">Email</label>
+							<input type="tel" class="db pv2 ph3 w-100 bw1 ba b--light-gray" id="email"/>
+						</div>
 
-							<div class="pv3">
-								<button class="submitbtn pv2 ph3 pv3-ns" onclick="submitIndividual()">Proceed to Pay</button>
-							</div>
-							<div class="pa3 bg-light-green " id="i_success" style="display:none">
-								<p>Registration was successful</p>
-							</div>
+						<div class="pv3">
+							<button class="submitbtn pv2 ph3 pv3-ns" onclick="RegBanquet()">Submit</button>
+						</div>
+						<div class="pa3 bg-light-green " id="i_success" style="display:none">
+							<p>Registration was successful</p>
 						</div>
 					</div>
+				</div>
 
-
-				</article>
-			</div>
+			</article>
 		</div>
-	</section>
+	</div>
+</section>
 
 <style>
-	.tabmenu, .tabmenu:hover, .tabmenu:focus{
-		color: #E87E04;
-		border-top: #E87E04 solid 1px;
-		border-left: #E87E04 solid 1px;
-		border-right: #E87E04 solid 1px;
-		display:inline-block;
-		padding: .5rem 1rem;
-		text-decoration: none;
-	}
-	 .tab .active{
-		background-color: #D55400;
-		color:#fff;
-	}
- .submitbtn{
-	 background-color: #D55400;
-	 color:#fff;
-		border-top: #E87E04 solid 1px;
-		border-left: #E87E04 solid 1px;
-		border-right: #E87E04 solid 1px;
-	}
+.tabmenu, .tabmenu:hover, .tabmenu:focus{
+	color: #E87E04;
+	border-top: #E87E04 solid 1px;
+	border-left: #E87E04 solid 1px;
+	border-right: #E87E04 solid 1px;
+	display:inline-block;
+	padding: .5rem 1rem;
+	text-decoration: none;
+}
+ .tab .active{
+	background-color: #D55400;
+	color:#fff;
+}
+.submitbtn{
+ background-color: #D55400;
+ color:#fff;
+	border-top: #E87E04 solid 1px;
+	border-left: #E87E04 solid 1px;
+	border-right: #E87E04 solid 1px;
+}
 </style>
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
 
-	function rudrSwitchTab(rudr_tab_id, rudr_tab_content) {
-		// first of all we get all tab content blocks (I think the best way to get them by class names)
-		var x = document.getElementsByClassName("tabcontent");
-		var i;
-		for (i = 0; i < x.length; i++) {
-			x[i].style.display = 'none'; // hide all tab content
-		}
-		document.getElementById(rudr_tab_content).style.display = 'block'; // display the content of the tab we need
+function RegBanquet(){
 
-		// now we get all tab menu items by class names (use the next code only if you need to highlight current tab)
-		var x = document.getElementsByClassName("tabmenu");
-		var i;
-		for (i = 0; i < x.length; i++) {
-			x[i].className = 'tabmenu';
-		}
-		document.getElementById(rudr_tab_id).className = 'tabmenu active';
-	}
+	var req = {}
+	req.RegistrationID = document.getElementById("registration_id").value
+	req.Email = document.getElementById("email").value
+	req.Phone = document.getElementById("phone").value
 
+	var handler = PaystackPop.setup({
+		key: 'pk_test_2b33f2428dab68c73039e8cbcb6c6802d2454389',
+		email: req.Email,
+		amount: 400000,
+		// ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
+		metadata: {
+			custom_fields: [
+				{
+					display_name: "Registration ID",
+					variable_name: "registration_id",
+					value: req.RegistrationId
+				},
+				{
+					display_name: "Mobile Number",
+					variable_name: "mobile_number",
+					value: req.Phone
+				}
+			]
+		},
+		callback: function(response){
+			console.log("Paystack's response: ", response);
+			req.Amount = 4000;
+			console.log(req)
+			fetch("/register_banquet",{
+				method:"POST",
+				body:JSON.stringify(req)
+			})
+			.then(function(response){
+				return response.json()
+			})
+			.then(function(resp){
+				console.log(resp)
+				document.getElementById("registration_id").value = ""
+				document.getElementById("email").value = ""
+				document.getElementById("phone").value = ""
 
+				document.getElementById("i_success").style.display = "block"
+			})
+		},
+			onClose: function(){
+				alert('Unable to perform payment');
+			}
+		});
 
-	function submitIndividual(){
-		document.getElementById("i_success").style.display = "none"
-		var req = {}
-		req.FullName = document.getElementById("i_fullname").value
-		req.FullName = document.getElementById("i_fullname").value
-		req.Club = document.getElementById("i_club").value
-		req.Region = document.getElementById("i_region").value
-		req.District = document.getElementById("i_district").value
-		req.Email = document.getElementById("i_email").value
-		req.Phone = document.getElementById("i_phone").value
-
-
-
-
-				var handler = PaystackPop.setup({
-		      key: 'pk_test_2b33f2428dab68c73039e8cbcb6c6802d2454389',
-		      email: req.Email,
-		      amount: 500000,
-		      // ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
-		      metadata: {
-		         custom_fields: [
-							 {
-									 display_name: "Full Name",
-									 variable_name: "full_name",
-									 value: req.FullName
-							 },
-							 {
-		                display_name: "Mobile Number",
-		                variable_name: "mobile_number",
-		                value: req.Phone
-		            }
-		         ]
-		      },
-		      callback: function(response){
-
-								console.log(req)
-								fetch("/register_individual",{
-									method:"POST",
-									body:JSON.stringify(req)
-								})
-								.then(function(response){
-									return response.json()
-								})
-								.then(function(resp){
-									console.log(resp)
-									document.getElementById("i_fullname").value = ""
-									document.getElementById("i_club").value = ""
-									document.getElementById("i_region").value = ""
-									document.getElementById("i_district").value = ""
-									document.getElementById("i_email").value = ""
-									document.getElementById("i_phone").value = ""
-
-									document.getElementById("i_success").style.display = "block"
-								})
-		      },
-		      onClose: function(){
-		          alert('Unable to perform payment');
-		      }
-		    });
-		    handler.openIframe();
-	}
+		handler.openIframe();
+}
 
 </script>
 {{template "footer"}}

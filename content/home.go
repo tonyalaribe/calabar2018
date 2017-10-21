@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/bosssauce/frontend"
@@ -24,6 +25,9 @@ var templates = template.New("").Funcs(template.FuncMap{
 			return false
 		}
 		return true
+	},
+	"add": func(a, b int) string {
+		return strconv.Itoa(a + b)
 	},
 })
 
@@ -76,6 +80,7 @@ func RecoverWrap(h http.HandlerFunc) http.HandlerFunc {
 				http.Error(w, "404 Page not found", http.StatusInternalServerError)
 			}
 		}()
+		// log.Println("calling next handler...")
 		h(w, r)
 	}
 }
@@ -107,6 +112,184 @@ func init() {
 		// log.Println(r.URL.Path)
 
 		renderTemplate(w, "banquet.html", nil)
+		// http.ServeFile(w, r, "./site/hotels.html")
+	}))
+
+	frontend.Router.HandleFunc("/view/individuals", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
+		individuals := make(map[string][]RegisteredIndividual)
+		Resp, err := http.Get(BASEURL + "/api/contents?type=RegisteredIndividuals")
+		if err != nil {
+			renderTemplate(w, "viewindividuals.html", nil)
+			log.Printf("%s\n", err)
+			return
+		}
+
+		defer Resp.Body.Close()
+		body, err := ioutil.ReadAll(Resp.Body)
+		if err != nil {
+			log.Println("error: ", err)
+		}
+		json.Unmarshal(body, &individuals)
+		log.Printf("individuals: %#v\nbody: %#v\n", individuals, string(body))
+		renderTemplate(w, "viewindividuals.html", individuals)
+
+		// http.ServeFile(w, r, "./site/hotels.html")
+	}))
+	frontend.Router.HandleFunc("/view/clubs", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
+		clubs := make(map[string][]RegisteredClub)
+		Resp, err := http.Get(BASEURL + "/api/contents?type=RegisteredClubs")
+		if err != nil {
+			renderTemplate(w, "viewclubs.html", nil)
+			log.Printf("%s\n", err)
+			return
+		}
+
+		defer Resp.Body.Close()
+		body, err := ioutil.ReadAll(Resp.Body)
+		if err != nil {
+			log.Println("error: ", err)
+		}
+		json.Unmarshal(body, &clubs)
+		log.Printf("clubs: %#v\nbody: %#v\n", clubs, string(body))
+		renderTemplate(w, "viewclubs.html", clubs)
+		// http.ServeFile(w, r, "./site/hotels.html")
+	}))
+	frontend.Router.HandleFunc("/view/banquets", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
+		banquets := make(map[string][]Banquet)
+		Resp, err := http.Get(BASEURL + "/api/contents?type=Banquet")
+		if err != nil {
+			renderTemplate(w, "viewbanquets.html", nil)
+			log.Printf("%s\n", err)
+			return
+		}
+
+		defer Resp.Body.Close()
+		body, err := ioutil.ReadAll(Resp.Body)
+		if err != nil {
+			log.Println("error: ", err)
+		}
+		json.Unmarshal(body, &banquets)
+		log.Printf("Banquets: %#v\nbody: %#v\n", banquets, string(body))
+		renderTemplate(w, "viewbanquets.html", banquets)
+	}))
+
+	frontend.Router.HandleFunc("/add_newsletter_email", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
+		data := make(map[string]interface{})
+		json.NewDecoder(r.Body).Decode(&data)
+		log.Println("data: ", data)
+		var buf bytes.Buffer
+		ww := multipart.NewWriter(&buf)
+
+		log.Println("writing...")
+
+		ww.WriteField("email", data["Email"].(string))
+		ww.Close()
+
+		newsletters := make(map[string][]Newsletter)
+		Resp, err := http.Get(BASEURL + "/api/contents?type=Newsletter")
+		if err != nil {
+			log.Printf("%s\n", err)
+			return
+		} else {
+			defer Resp.Body.Close()
+			body, err := ioutil.ReadAll(Resp.Body)
+			if err != nil {
+				log.Println("error: ", err)
+			}
+			json.Unmarshal(body, &newsletters)
+			log.Printf("%#v\n", newsletters)
+			for _, newsletter := range newsletters["data"] {
+				if newsletter.Email == data["Email"].(string) {
+					json.NewEncoder(w).Encode(map[string]string{"error": "Already Subscribed"})
+					return
+				}
+			}
+		}
+
+		log.Println("Making a post request...")
+		resp, err := http.Post(BASEURL+"/api/content/create?type=Newsletter", ww.FormDataContentType(), &buf)
+		if err != nil {
+			log.Println(err)
+		}
+		byt, _ := ioutil.ReadAll(resp.Body)
+		log.Println(string(byt))
+		json.NewEncoder(w).Encode(data)
+
+	}))
+
+	frontend.Router.HandleFunc("/register_banquet", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
+		data := make(map[string]interface{})
+		json.NewDecoder(r.Body).Decode(&data)
+		log.Println("data: ", data)
+		var buf bytes.Buffer
+		ww := multipart.NewWriter(&buf)
+
+		log.Println("writing...")
+
+		err := ww.WriteField("registration_id", data["RegistrationID"].(string))
+		log.Println(err)
+		err = ww.WriteField("phone", data["Phone"].(string))
+		log.Println(err)
+		err = ww.WriteField("email", data["Email"].(string))
+		log.Println(err)
+		log.Printf("type: %T", data["Amount"])
+		err = ww.WriteField("amount", strconv.FormatFloat(data["Amount"].(float64), 'f', -1, 64))
+		log.Println("err: ", err)
+
+		ww.Close()
+
+		// check if registration id is present...
+		banquets := make(map[string][]Banquet)
+		BanquetResp, err := http.Get(BASEURL + "/api/contents?type=Banquet")
+		if err != nil {
+			log.Printf("%s\n", err)
+			return
+		} else {
+			defer BanquetResp.Body.Close()
+			body, _ := ioutil.ReadAll(BanquetResp.Body)
+
+			json.Unmarshal(body, &banquets)
+			log.Printf("%#v\n", banquets)
+			for _, banq := range banquets["data"] {
+				if banq.RegistrationId == data["RegistrationID"].(string) {
+					json.NewEncoder(w).Encode(map[string]string{"error": "Already Registered"})
+					return
+				}
+			}
+		}
+
+		isRegistered := false
+		users := make(map[string][]RegisteredIndividual)
+		UsersResp, err := http.Get(BASEURL + "/api/contents?type=RegisteredIndividual")
+		if err != nil {
+			log.Printf("%s\n", err)
+			return
+		} else {
+			defer UsersResp.Body.Close()
+			body, _ := ioutil.ReadAll(UsersResp.Body)
+
+			json.Unmarshal(body, &users)
+			log.Printf("%#v\n", users)
+			for _, user := range users["data"] {
+				if user.RegisterID == data["RegistrationID"].(string) {
+					isRegistered = true
+					break
+				}
+			}
+		}
+		if !isRegistered {
+			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid Registration ID"})
+			return
+		}
+
+		log.Println("Making a post request....")
+		resp, err := http.Post(BASEURL+"/api/content/create?type=Banquet", ww.FormDataContentType(), &buf)
+		if err != nil {
+			log.Println(err)
+		}
+		byt, _ := ioutil.ReadAll(resp.Body)
+		log.Println(string(byt))
+		json.NewEncoder(w).Encode(data)
 		// http.ServeFile(w, r, "./site/hotels.html")
 	}))
 
