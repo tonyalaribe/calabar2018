@@ -123,6 +123,7 @@
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
 
+
 	function rudrSwitchTab(rudr_tab_id, rudr_tab_content) {
 		// first of all we get all tab content blocks (I think the best way to get them by class names)
 		var x = document.getElementsByClassName("tabcontent");
@@ -158,7 +159,7 @@
 
 
 				var handler = PaystackPop.setup({
-		      key: 'pk_test_2b33f2428dab68c73039e8cbcb6c6802d2454389',
+		      key: paystackPK,
 		      email: req.Email,
 		      amount: 500000,
 		      // ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
@@ -220,7 +221,7 @@
 		req.Phone = document.getElementById("c_phone").value
 
 		var handler = PaystackPop.setup({
-		      key: 'pk_test_2b33f2428dab68c73039e8cbcb6c6802d2454389',
+		      key: paystackPK,
 		      email: req.Email,
 		      amount: 2500000,
 		      // ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you

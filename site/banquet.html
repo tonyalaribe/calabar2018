@@ -69,7 +69,7 @@ function RegBanquet(){
 	req.Phone = document.getElementById("phone").value
 
 	var handler = PaystackPop.setup({
-		key: 'pk_test_2b33f2428dab68c73039e8cbcb6c6802d2454389',
+		key: paystackPK,
 		email: req.Email,
 		amount: 400000,
 		// ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
