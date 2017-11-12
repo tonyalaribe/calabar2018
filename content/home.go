@@ -474,7 +474,7 @@ func init() {
 	}))
 
 	frontend.Router.HandleFunc("/", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
-		// log.Println(r.URL.Path)
+		log.Println(r.URL.Path)
 		data := make(map[string]interface{})
 		response, err := http.Get(BASEURL + "/api/contents?type=Sponsor")
 		if err != nil {
