@@ -18,6 +18,8 @@ import (
 	"github.com/bosssauce/frontend"
 )
 
+var BASEURL = "http://localhost:8080"
+
 var templates = template.New("").Funcs(template.FuncMap{
 	"odd": func(number int) bool {
 
@@ -43,7 +45,6 @@ func ParseTemplates(folder string) *template.Template {
 	templ := templates
 	err := filepath.Walk(folder, func(path string, info os.FileInfo, err error) error {
 		if strings.Contains(path, ".html") {
-			log.Println(path)
 			_, err = templ.ParseFiles(path)
 			if err != nil {
 				log.Println(err)
@@ -59,8 +60,6 @@ func ParseTemplates(folder string) *template.Template {
 
 	return templ
 }
-
-var BASEURL = "http://localhost:8080"
 
 func RecoverWrap(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -130,7 +129,6 @@ func init() {
 			log.Println("error: ", err)
 		}
 		json.Unmarshal(body, &individuals)
-		log.Printf("individuals: %#v\nbody: %#v\n", individuals, string(body))
 		renderTemplate(w, "viewindividuals.html", individuals)
 
 		// http.ServeFile(w, r, "./site/hotels.html")
@@ -150,7 +148,6 @@ func init() {
 			log.Println("error: ", err)
 		}
 		json.Unmarshal(body, &clubs)
-		log.Printf("clubs: %#v\nbody: %#v\n", clubs, string(body))
 		renderTemplate(w, "viewclubs.html", clubs)
 		// http.ServeFile(w, r, "./site/hotels.html")
 	}))
@@ -169,19 +166,14 @@ func init() {
 			log.Println("error: ", err)
 		}
 		json.Unmarshal(body, &banquets)
-		log.Printf("Banquets: %#v\nbody: %#v\n", banquets, string(body))
 		renderTemplate(w, "viewbanquets.html", banquets)
 	}))
 
 	frontend.Router.HandleFunc("/add_newsletter_email", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
 		data := make(map[string]interface{})
 		json.NewDecoder(r.Body).Decode(&data)
-		log.Println("data: ", data)
 		var buf bytes.Buffer
 		ww := multipart.NewWriter(&buf)
-
-		log.Println("writing...")
-
 		ww.WriteField("email", data["Email"].(string))
 		ww.Close()
 
@@ -197,7 +189,6 @@ func init() {
 				log.Println("error: ", err)
 			}
 			json.Unmarshal(body, &newsletters)
-			log.Printf("%#v\n", newsletters)
 			for _, newsletter := range newsletters["data"] {
 				if newsletter.Email == data["Email"].(string) {
 					json.NewEncoder(w).Encode(map[string]string{"error": "Already Subscribed"})
@@ -206,7 +197,6 @@ func init() {
 			}
 		}
 
-		log.Println("Making a post request...")
 		resp, err := http.Post(BASEURL+"/api/content/create?type=Newsletter", ww.FormDataContentType(), &buf)
 		if err != nil {
 			log.Println(err)
@@ -220,11 +210,8 @@ func init() {
 	frontend.Router.HandleFunc("/register_banquet", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
 		data := make(map[string]interface{})
 		json.NewDecoder(r.Body).Decode(&data)
-		log.Println("data: ", data)
 		var buf bytes.Buffer
 		ww := multipart.NewWriter(&buf)
-
-		log.Println("writing...")
 
 		err := ww.WriteField("registration_id", data["RegistrationID"].(string))
 		log.Println(err)
@@ -249,7 +236,6 @@ func init() {
 			body, _ := ioutil.ReadAll(BanquetResp.Body)
 
 			json.Unmarshal(body, &banquets)
-			log.Printf("%#v\n", banquets)
 			for _, banq := range banquets["data"] {
 				if banq.RegistrationId == data["RegistrationID"].(string) {
 					json.NewEncoder(w).Encode(map[string]string{"error": "Already Registered"})
