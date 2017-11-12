@@ -207,21 +207,6 @@ var serveCmd = &cobra.Command{
 }
 
 func init() {
-	//create your file with desired read/write permissions
-	f, err := os.OpenFile("/storage/calabar2018.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	//defer to close when you're done with it, not because you think it's idiomatic!
-	defer f.Close()
-
-	//set output of logs to f
-	log.SetOutput(f)
-
-	//test case
-	log.Println("check to make sure it works")
-
 	for _, cmd := range []*cobra.Command{runCmd, serveCmd} {
 		cmd.Flags().StringVar(&bind, "bind", "localhost", "address for ponzu to bind the HTTP(S) server")
 		cmd.Flags().IntVar(&httpsport, "https-port", 443, "port for ponzu to bind its HTTPS listener")

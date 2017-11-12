@@ -76,6 +76,12 @@ func RecoverWrap(h http.HandlerFunc) http.HandlerFunc {
 					err = errors.New("Unknown error")
 				}
 				log.Println(err.Error())
+				f, err := os.OpenFile("/storage/calabar2018.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+				f.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+				f.Write([]byte(err.Error()))
 				http.Error(w, "404 Page not found", http.StatusInternalServerError)
 			}
 		}()
@@ -86,6 +92,21 @@ func RecoverWrap(h http.HandlerFunc) http.HandlerFunc {
 
 func init() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
+	//create your file with desired read/write permissions
+	f, err := os.OpenFile("/storage/calabar2018.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//defer to close when you're done with it, not because you think it's idiomatic!
+	// defer f.Close()
+
+	//set output of logs to f
+	log.SetOutput(f)
+
+	//test case
+	log.Println("check to make sure it works")
 
 	url := os.Getenv("DOMAIN")
 	if url != "" {
@@ -475,6 +496,10 @@ func init() {
 
 	frontend.Router.HandleFunc("/", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.URL.Path)
+
+		log.Println("in home handler")
+		// panic("i feel like panikcing")
+
 		data := make(map[string]interface{})
 		response, err := http.Get(BASEURL + "/api/contents?type=Sponsor")
 		if err != nil {
@@ -497,4 +522,5 @@ func init() {
 		// http.ServeFile(w, r, "./site/index.html")
 	}))
 
+	log.Println("registered handlers")
 }
