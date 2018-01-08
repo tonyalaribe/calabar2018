@@ -379,7 +379,7 @@ func init() {
 	frontend.Router.HandleFunc("/hotels", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
 		// log.Println(r.URL.Path)
 		hotels := make(map[string][]Hotel)
-		response, err := http.Get(BASEURL + "/api/contents?type=Hotel&count=-1")
+		response, err := http.Get(BASEURL + "/api/contents?type=Hotel&count=-1&order=ASC")
 		if err != nil {
 			log.Printf("%s\n", err)
 		} else {
