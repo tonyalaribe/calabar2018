@@ -18,7 +18,8 @@ import (
 	"github.com/bosssauce/frontend"
 )
 
-var BASEURL = "http://localhost:8080"
+// var BASEURL = "http://localhost:8080
+var BASEURL = "http://calabar2018.com"
 
 var templates = template.New("").Funcs(template.FuncMap{
 	"odd": func(number int) bool {
@@ -388,29 +389,31 @@ func init() {
 
 			// json.Unmarshal(hotels, v)
 			json.Unmarshal(body, &hotels)
-			// log.Printf("%s\n", string(body))
 		}
 
+		log.Println(394, response)
+
 		rooms := make(map[string][]Room)
-		response, err = http.Get(BASEURL + "/api/contents?type=Room")
+		response, err = http.Get(BASEURL + "/api/contents?type=Room&count=-1&order=ASC")
 		if err != nil {
 			log.Printf("%s\n", err)
 		} else {
 			defer response.Body.Close()
-			body, _ := ioutil.ReadAll(response.Body)
-
-			// json.Unmarshal(hotels, v)
+			body, err := ioutil.ReadAll(response.Body)
+			if err != nil {
+				log.Println(err)
+			}
 			json.Unmarshal(body, &rooms)
 		}
 
 		finalHotels := []Hotel{}
 		for _, hotel := range hotels["data"] {
-			log.Println(hotel)
+			// log.Println(hotel)
 			nrooms := []Room{}
 			for _, room := range rooms["data"] {
 
 				if room.Hotel == fmt.Sprintf("/api/content?type=Hotel&id=%d", hotel.ID) {
-					log.Println("match")
+					// log.Println("match")
 					nrooms = append(nrooms, room)
 				}
 			}
@@ -421,19 +424,10 @@ func init() {
 		data := make(map[string][]Hotel)
 		data["data"] = finalHotels
 		renderTemplate(w, "hotels.html", data)
-		// http.ServeFile(w, r, "./site/hotels.html")
 	}))
 
 	frontend.Router.HandleFunc("/hotels/book", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
-		// log.Println(r.URL.Path)
-		log.Println(r.URL.Query())
-
-		// vars := mux.Vars(r)
-		// log.Printf("%#v", vars)
-		// slug := vars["slug"]
-		// log.Println(slug)
-
-		// hotelSlug := r.URL.Query().Get("hotel")
+		// log.Println(r.URL.Query())
 		roomSlug := r.URL.Query().Get("room")
 
 		room := make(map[string][]Room)
@@ -444,10 +438,7 @@ func init() {
 			defer response.Body.Close()
 			body, _ := ioutil.ReadAll(response.Body)
 			// log.Printf("> %#v", string(body))
-			// json.Unmarshal(hotels, v)
 			json.Unmarshal(body, &room)
-			// log.Printf("%#v\n", room)
-			// log.Printf("%s\n", string(body))
 		}
 
 		hotel := make(map[string][]Hotel)
@@ -457,10 +448,7 @@ func init() {
 		} else {
 			defer response.Body.Close()
 			body, _ := ioutil.ReadAll(response.Body)
-
-			// json.Unmarshal(hotels, v)
 			json.Unmarshal(body, &hotel)
-			// log.Printf("%#v\n", hotel)
 		}
 
 		data := make(map[string]interface{})
@@ -470,13 +458,11 @@ func init() {
 		if len(room["data"]) > 0 {
 			data["room"] = room["data"][0]
 		}
-		// log.Println(data)
+
 		renderTemplate(w, "book_hotel.html", data)
-		// http.ServeFile(w, r, "./site/hotels.html")
 	}))
 
 	frontend.Router.HandleFunc("/schedule", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
-		// log.Println(r.URL.Path)
 		data := make(map[string]interface{})
 		response, err := http.Get(BASEURL + "/api/contents?type=Schedule")
 		if err != nil {
@@ -487,19 +473,15 @@ func init() {
 
 			// json.Unmarshal(data, v)
 			json.Unmarshal(body, &data)
-			// log.Printf("%s\n", string(body))
 		}
 
 		renderTemplate(w, "schedule.html", data)
-		// http.ServeFile(w, r, "./site/hotels.html")
 	}))
 
 	frontend.Router.HandleFunc("/", RecoverWrap(func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.URL.Path)
 
 		log.Println("in home handler")
-		// panic("i feel like panikcing")
-
 		data := make(map[string]interface{})
 		response, err := http.Get(BASEURL + "/api/contents?type=Sponsor")
 		if err != nil {
@@ -514,12 +496,9 @@ func init() {
 			// json.Unmarshal(data, v)
 			json.Unmarshal(body, &sponsor)
 			data["sponsors"] = sponsor["data"]
-
-			// log.Printf("%#v\n", data)
 		}
 
 		renderTemplate(w, "index.html", data)
-		// http.ServeFile(w, r, "./site/index.html")
 	}))
 
 	log.Println("registered handlers")
