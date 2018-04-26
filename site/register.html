@@ -150,13 +150,10 @@
 		req.Email = document.getElementById("i_email").value
 		req.Phone = document.getElementById("i_phone").value
 
-
-
-
 				var handler = PaystackPop.setup({
 		      key: paystackPK,
 		      email: req.Email,
-		      amount: 600000,
+		      amount: 700000,
 		      // ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
 		      metadata: {
 		         custom_fields: [
