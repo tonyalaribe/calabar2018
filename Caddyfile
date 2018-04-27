@@ -1,0 +1,17 @@
+calabar2018.com {
+    # other directives
+    on startup systemctl restart calabar2018
+    proxy / localhost:8004
+    root  /home/ubuntu/server/calabar2018
+	errors ./errors.log
+
+    git {
+            repo git@github.com:tonyalaribe/calabar2018
+            key /home/ubuntu/id_rsa
+            interval 600
+            path src
+            then systemctl restart calabar2018
+    }
+
+}
+
